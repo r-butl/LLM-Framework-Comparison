@@ -11,3 +11,9 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+
+## Add Dependencies
+
+```bash
+pip freeze > requirements.txt
+```
