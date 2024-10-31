@@ -2,13 +2,16 @@ from openai import OpenAI
 
 client = OpenAI()
 
-message = {"role":"user", "content": input("This is the beginning of your chat with AI. [To exit, send \"###\".]\n\nYou:")}
+conversation = [{"role": "system", "content": "You are a helpful AI assistant."}]
 
-conversation = [{"role": "system", "content": "DIRECTIVE_FOR_gpt-3.5-turbo"}]
+user_input = ""
 
-while(message["content"]!="###"):
+while(user_input != "exit"):
+    user_input = input("You: ")
+    message = {"role": "user", "content": user_input}
     conversation.append(message)
     completion = client.chat.completions.create(model="gpt-4o-mini", messages=conversation) 
-    message["content"] = input(f"Assistant: {completion.choices[0].message.content} \nYou: ")
-    print()
-    conversation.append(completion.choices[0].message)
+    response = completion.choices[0].message.content
+    print("AI : " + response)
+    conversation.append({"role": "system", "content": response})
+    
