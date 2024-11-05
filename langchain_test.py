@@ -1,18 +1,19 @@
 import os
 from langchain_openai import ChatOpenAI
 from langchain_community.callbacks import get_openai_callback
-from turtle_bot import robot_functions_list_1, TurtleRobot
+import robot_functions_list
+from turtle_bot import TurtleRobot
 from ROS_LLM_interfaces import Response, Request
 import json
 
 # For ROS-LLM System interface emulation
 robot = TurtleRobot()
-response = Response()
-request = Request()
+response = Response("")
+request = Request("")
 
 # Create an LLM with an agent that can access these tools
 llm = ChatOpenAI(model="gpt-4o-mini")
-llm_with_tools = llm.bind_tools(robot_functions_list_1)
+llm_with_tools = llm.bind_tools(robot_functions_list)
 
 query = "Have the robot navigate a square pattern on the ground."
 

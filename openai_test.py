@@ -1,7 +1,11 @@
 from openai import OpenAI
 from openai.types.chat.chat_completion import ChatCompletionMessage
+from ROS_LLM_interfaces import Request, Response
 from functions import robot_functions_list_1
+from termcolor import colored
 import json
+
+from turtle_bot import TurtleRobot
 
 MODEL = "gpt-4o-mini"
 
@@ -16,16 +20,22 @@ for function in robot_functions_list_1:
 
 conversation = [{"role": "system", "content": "You are a helpful AI assistant."}]
 
+turtelbot = TurtleRobot()
+
 def execute_function_call(message: ChatCompletionMessage):
     for tool_call in message.tool_calls:
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments)
-        print("func ", name, "(", args, ")")
+        response = turtelbot.function_call_callback(Request(json.dumps({
+            "args": args,
+            "name": name
+        })), Response(""))
+
         conversation.append({
             "tool_call_id": tool_call.id,
             "role": "tool",
             "name": name,
-            "content": "",
+            "content": response.response_text,
         })
 
 call_count = 0
@@ -56,9 +66,10 @@ def create_completion():
 user_input = ""
 
 while(user_input != "exit"):
-    user_input = input("You: ")
+    user_input = input(colored("You: ", "blue"))
     message = {"role": "user", "content": user_input}
     conversation.append(message)
 
     response = create_completion()
-    print("AI: ", response)
+    if (response != None):
+        print(colored("AI: ", "green"), response)
