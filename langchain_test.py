@@ -28,8 +28,6 @@ print(f"Usage information: {cb}")
 
 # call all of the tools in order
 for call in tool_calls:
-    # Redump the json text into into a string for the function callback, I ended up modifying it
-    #   anyway.
     request.request_text = json.dumps(call)
     robot.function_call_callback(request=request, response=response)
 
